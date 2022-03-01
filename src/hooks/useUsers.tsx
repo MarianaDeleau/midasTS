@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Users } from "../api/apiUsers";
 import { message } from "antd";
+import { User } from "../types/models";
 
 const useUsers = () => {
 	const navigate = useNavigate();
@@ -22,15 +23,15 @@ const useUsers = () => {
 
 	const login = (email: string, pass: string) => {
 		try {
-			const currentUser = Users.find((u) => {
+			const currentUser = Users.find((u: User) => {
 				if (u.user === email && u.pass === pass) {
-					return true;
+					return u;
 				}
 				return false;
 			});
 
 			if (currentUser) {
-				setUserStorage("true");
+				setUserStorage(JSON.stringify(currentUser.user));
 				setHasUserLoggedIn(true);
 				navigate("/home");
 			} else {
@@ -44,7 +45,7 @@ const useUsers = () => {
 
 	const loginWithToken = () => {
 		try {
-			if (userStorage === "true") {
+			if (userStorage) {
 				setHasUserLoggedIn(true);
 			} else {
 				setHasUserLoggedIn(false);
@@ -58,7 +59,7 @@ const useUsers = () => {
 		navigate("/");
 	}; //se ejecuta con el evento del boton
 
-	return { login, logout, hasUserLoggedIn, setHasUserLoggedIn };
+	return { login, logout, hasUserLoggedIn, setHasUserLoggedIn, userStorage };
 };
 
 export { useUsers };

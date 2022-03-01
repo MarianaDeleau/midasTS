@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Button, Input /*Tooltip*/ } from "antd";
+import { Button, Input } from "antd";
 import { LoginOutlined } from "@ant-design/icons";
 import RegularSeparator from "../common/RegularSeparator";
 import { Link } from "react-router-dom";
@@ -12,7 +12,7 @@ type Props = {
 };
 
 const Header: FC<Props> = ({ handleSearch }) => {
-	const { logout } = useUsers();
+	const { logout, userStorage } = useUsers();
 
 	return (
 		<div className={"header-container"}>
@@ -30,7 +30,7 @@ const Header: FC<Props> = ({ handleSearch }) => {
 				{
 					<div style={styles.searcherContainer}>
 						<Search
-							placeholder="Buscar"
+							placeholder={`Hola ${userStorage?.toUpperCase()}. Qué desea buscar?`}
 							onSearch={(value) => handleSearch(value)}
 							size={"large"}
 						/>
