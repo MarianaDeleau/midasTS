@@ -7,21 +7,21 @@ import InfiniteScroll from "react-infinite-scroller";
 import LineSeparator from "../components/common/LineSeparator";
 import IdleTimerContainer from "../components/parts/IdleTimerContainer";
 import { useNews } from "../hooks/useNews";
+import { WithAuth } from "../hoc";
 
-const Home: FC = (props) => {
+const Home: FC = () => {
 	const { filteredData, newsToShow, searchNews, setNewsToShow, loading } =
 		useNews();
 
 	const cards = filteredData?.filter((x, idx) => idx > 4 && idx <= newsToShow);
 
 	const numberOfNews = cards?.length;
-
 	return loading ? (
 		<div className={"spin-container"}>
 			<Spin size="large" />
 		</div>
 	) : (
-		<div /*style={style}*/>
+		<div>
 			<IdleTimerContainer />{" "}
 			{/*Componente encargado de cerrar sesión por inactividad*/}
 			<Header handleSearch={searchNews} />
@@ -64,4 +64,4 @@ const Home: FC = (props) => {
 	);
 };
 
-export const HomePage = Home;
+export const HomePage = WithAuth(Home);

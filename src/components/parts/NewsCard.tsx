@@ -15,7 +15,7 @@ const NewsCard: FC<Props> = ({ data }) => {
 		<>
 			{data?.map((n) => {
 				return (
-					<Tooltip placement="topLeft" title={n.title}>
+					<Tooltip placement="topLeft" title={n.title} key={n.uuid}>
 						<Link to={`news/${n.uuid}`}>
 							<Card
 								key={n.uuid}

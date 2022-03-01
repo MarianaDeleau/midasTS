@@ -1,36 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Users } from "../api/apiUsers";
 import { message } from "antd";
 
 const useUsers = () => {
 	const navigate = useNavigate();
-	const [logged, setLogged] = useState(
-		JSON.parse(localStorage.getItem("logged")!) || false
-	);
 
-	const login = (email: string, password: string) => {
-		const exist = Users.find((u) => {
-			return u.user === email && u.pass === password;
-		});
+	const [userStorage, setUserStorage] = useState<string | undefined>(
+		localStorage.getItem("logged") || undefined
+	); // chequea si hay usuario logueado o no
 
-		if (exist) {
-			localStorage.setItem("logged", JSON.stringify(true));
-			setLogged(true);
-			navigate("/");
-		} else {
-			message.error("Usuario o contraseña incorrecta!", 5);
-			setLogged(false);
+	const [hasUserLoggedIn, setHasUserLoggedIn] = useState<boolean>(); //estado de usuario logueado
+
+	useEffect(() => {
+		if (userStorage) localStorage.setItem("logged", userStorage);
+	}, [userStorage]); //cuando cambia el valor del user setea al local storage
+
+	useEffect(() => {
+		loginWithToken();
+	}, []); //se ejecuta cada vez que se monta el componente para verificar que haya usuario logueado y devolver el componente validado por el HOC Withauth
+
+	const login = (email: string, pass: string) => {
+		try {
+			const currentUser = Users.find((u) => {
+				if (u.user === email && u.pass === pass) {
+					return true;
+				}
+				return false;
+			});
+
+			if (currentUser) {
+				setUserStorage("true");
+				setHasUserLoggedIn(true);
+				navigate("/home");
+			} else {
+				message.error("Usuario o contraseña incorrecta!", 5);
+				setHasUserLoggedIn(false);
+			}
+		} catch (e) {
+			console.log("Try again");
 		}
-	};
+	}; //se ejecuta con el submit del formulario
+
+	const loginWithToken = () => {
+		try {
+			if (userStorage === "true") {
+				setHasUserLoggedIn(true);
+			} else {
+				setHasUserLoggedIn(false);
+			}
+		} catch (e) {}
+	}; //se ejecuta cada vez que se monta el componente para verificar que haya usuario logueado y devolver el componente validado por el HOC Withauth
 
 	const logout = () => {
 		localStorage.removeItem("logged");
+		setHasUserLoggedIn(false);
 		navigate("/");
-		setLogged(false);
-	};
+	}; //se ejecuta con el evento del boton
 
-	return { login, logged, setLogged, logout };
+	return { login, logout, hasUserLoggedIn, setHasUserLoggedIn };
 };
 
 export { useUsers };

@@ -1,4 +1,5 @@
-import React, { FC } from "react";
+import { Spin } from "antd";
+import { FC } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useUsers } from "../../hooks/useUsers";
 
@@ -7,15 +8,18 @@ const publicRoutes = ["/", "/signup"];
 type withAuthenticationFn = (Component: FC) => FC;
 
 const WithAuth: withAuthenticationFn = (Component) => {
-	const Authenticated = () => {
+	const Authenticated: FC = (): JSX.Element | null => {
 		const navigate = useNavigate();
 		const location = useLocation();
 
-		const { logged } = useUsers();
+		const { hasUserLoggedIn } = useUsers();
 
-		if (logged && publicRoutes.includes(location.pathname)) navigate("/home");
+		if (hasUserLoggedIn === undefined) return <Spin />;
 
-		if (logged === false && !publicRoutes.includes(location.pathname))
+		if (hasUserLoggedIn && publicRoutes.includes(location.pathname))
+			navigate("/home");
+
+		if (!hasUserLoggedIn && !publicRoutes.includes(location.pathname))
 			navigate("/");
 
 		return <Component />;
