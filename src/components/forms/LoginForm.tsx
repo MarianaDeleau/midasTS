@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -9,12 +9,21 @@ const LoginForm: FC = () => {
 
 	const [email, setEmail] = useState("");
 	const [pass, setPass] = useState("");
+
+	const onSubmit = (data: { email: string; pass: string }) => {
+		try {
+			login(data.email, data.pass);
+		} catch (e) {
+			// setAlert(e.message);
+		}
+	};
+
 	return (
 		<Form
 			name="normal_login"
 			className="login-form"
 			action=""
-			onFinish={() => login(email, pass)}
+			onFinish={() => onSubmit({ email, pass })}
 		>
 			<Form.Item
 				name="username"

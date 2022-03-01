@@ -1,8 +1,8 @@
-import React from "react";
+import { FC } from "react";
 import SignupForm from "../components/forms/SignupForm";
 import { WithAuth } from "../hoc/index";
 
-const Signup = () => {
+const Signup: FC = () => {
 	return (
 		<div className={"login-container"}>
 			<h2>Signup</h2>
